@@ -85,13 +85,14 @@ export class GeminiService {
 
   // Robust generator with retries and fallback models for transient 5xx overloads
   private async generateWithRetries(
-    contents: Array<any>,
+    contents: Array<{ text: string } | { inlineData: { mimeType: string; data: string } }>,
     models: string[] = ["gemini-2.5-flash", "gemini-1.5-flash"],
     maxAttemptsPerModel: number = 3
-  ): Promise<any> {
+  ): Promise<{ text: string | undefined }> {
     const isTransient = (error: unknown): boolean => {
-      const anyErr = error as any;
-      const status = anyErr?.status ?? anyErr?.code ?? anyErr?.error?.code;
+      const anyErr = error as Record<string, unknown>;
+      const errorObj = anyErr?.error as Record<string, unknown> | undefined;
+      const status = anyErr?.status ?? anyErr?.code ?? errorObj?.code;
       const message: string = (anyErr?.message || "").toString();
       // Treat 5xx or UNAVAILABLE as transient
       return (
@@ -399,12 +400,13 @@ export class GeminiService {
       };
     } catch (error) {
       console.error("Error processing resume:", error);
-      const anyErr = error as any;
-      const status = anyErr?.status ?? anyErr?.code ?? anyErr?.error?.code;
+      const anyErr = error as Record<string, unknown>;
+      const errorObj = anyErr?.error as Record<string, unknown> | undefined;
+      const status = anyErr?.status ?? anyErr?.code ?? errorObj?.code;
       const friendly =
         status === 503
           ? "The AI model is temporarily overloaded. We are retrying automatically; please try again in a moment if it persists."
-          : anyErr?.message || "Unknown error occurred";
+          : String(anyErr?.message || "Unknown error occurred");
       return {
         success: false,
         error: friendly,
