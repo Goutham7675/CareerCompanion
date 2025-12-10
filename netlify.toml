@@ -2,7 +2,8 @@
 
 [build]
 # Build command - Next.js 15 compatible
-command = "npm run build"
+# Note: npm ci ensures exact versions from package-lock.json
+command = "npm ci && npm run build"
 # Publish directory where Next.js builds to
 publish = ".next"
 
