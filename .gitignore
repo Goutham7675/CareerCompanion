@@ -1,4 +1,37 @@
+# Dependencies
 node_modules/
+.pnp
+.pnp.js
+
+# Next.js
 .next/
-dist/
+out/
 build/
+dist/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+.DS_Store
+*.pem
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+Thumbs.db
+.Spotlight-V100
+.Trashes
+
+# Netlify
+.netlify/
+.netlify/cache/
